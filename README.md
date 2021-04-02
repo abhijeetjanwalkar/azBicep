@@ -1,0 +1,2 @@
+# azBicep
+Learning Azure Bicep
