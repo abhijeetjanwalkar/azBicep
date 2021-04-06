@@ -1,6 +1,6 @@
 //another attempt at bastion host
 //Template to create AZ bastion host and dependant resources.
-//no parameters, location same as RG
+//with  parameters, location same as RG
 
 
 param vnet001 string = 'vnet001'
