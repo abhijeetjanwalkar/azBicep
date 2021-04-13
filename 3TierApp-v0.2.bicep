@@ -52,28 +52,27 @@ resource prcompip01 'Microsoft.Network/publicIPAddresses@2020-11-01' = {
   name: '${prsite}-com-pip-01'
   location: location
   sku:{
-     name: 'Basic'
-     tier: 'Regional'
+     name: 'Standard'
+     tier: 'Global'
   }
   properties:{
     publicIPAddressVersion:'IPv4'
-    publicIPAllocationMethod:'Dynamic'
+    publicIPAllocationMethod:'Static'
       }
 }
-
 
 //pip 02 for Bastion servers
 resource prcompip02 'Microsoft.Network/publicIPAddresses@2020-11-01' = {
   name: '${prsite}-com-pip-02'
   location: location
   sku:{
-     name:'Basic'
-     tier: 'Regional'
+     name:'Standard'
+     tier: 'Global'
   }
   properties:{
     publicIPAddressVersion:'IPv4'
-    publicIPAllocationMethod:'Dynamic'
-      }
+    publicIPAllocationMethod:'Static'
+    }
 }
 
 //build bastion host
