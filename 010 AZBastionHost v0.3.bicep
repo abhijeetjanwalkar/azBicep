@@ -154,6 +154,26 @@ resource prwebnwint 'Microsoft.Network/networkInterfaces@2020-06-01' = [for i in
   ]
 }
 }]
+// build security group for Web (2 rules bastion to web port 3389, web to app port 443)
+//resource prwebsg 'Microsoft.Network/networkSecurityGroups@2020-11-01' : {
+//  name: '${prsite}-${tier01}-sg-01'
+//  location: location
+//  properties:{
+//    securityRules:[
+//      {
+//        id: 'websecurity'
+//        properties:{
+//          description: 'security group for web vms'
+//          protocol:'Tcp'
+//          sourcePortRange:'*'
+//          destinationPortRange: '443'
+//          access:'Allow'
+//         sourceAddressPrefix: 
+//        }
+//      }
+//    ]
+//  }
+//}
 //build web VM
 resource prwebvm 'Microsoft.Compute/virtualMachines@2020-06-01' = [for i in range(0,webvmcount): {
   name: '${prsite}-${tier01}-vm-${i}'
@@ -186,8 +206,23 @@ resource prwebvm 'Microsoft.Compute/virtualMachines@2020-06-01' = [for i in rang
          ]
       }
   }
- }]
  
+}]
+//build extension to install IIS
+resource prwebext01 'Microsoft.Compute/virtualMachines/extensions@2020-12-01'  = [for i in range(0,webvmcount) : {
+  name: '${prsite}-${tier01}-vm-${i}/ext-${i}' 
+  location: location
+   properties: {
+    autoUpgradeMinorVersion: true
+    publisher: 'Microsoft.Compute'
+    type: 'CustomScriptExtension'
+    typeHandlerVersion: '1.9'
+    settings: {
+     'commandToExecute': 'powershell.exe Install-WindowsFeature -name Web-Server -IncludeAllSubFeature -IncludeManagementTools'
+    }
+        }
+ }]
+
  //create internal LB for web VMs.
  //resource prweblb01 'Microsoft.Network/loadBalancers@2020-11-01': {
  //  name: '${prsite}-${tier01}-ilb-${i}'
@@ -200,6 +235,7 @@ resource prwebvm 'Microsoft.Compute/virtualMachines@2020-06-01' = [for i in rang
 //   }
 //   
 // }
+
  //build db VM and its dependancies
 //build dependancies - network interfaces
 resource prdbnwint 'Microsoft.Network/networkInterfaces@2020-06-01' = [for i in range(0,dbvmcount): {
